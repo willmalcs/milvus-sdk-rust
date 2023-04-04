@@ -1737,7 +1737,7 @@ pub mod milvus_service_client {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D: TryInto<tonic::transport::Endpoint>,
             D::Error: Into<StdError>,
         {
             let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
@@ -1793,10 +1793,29 @@ pub mod milvus_service_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         pub async fn create_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateCollectionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1810,12 +1829,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreateCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "CreateCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn drop_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::DropCollectionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1829,12 +1859,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DropCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "DropCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn has_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::HasCollectionRequest>,
-        ) -> Result<tonic::Response<super::BoolResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::BoolResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -1848,12 +1886,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/HasCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "HasCollection"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn load_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::LoadCollectionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1867,12 +1913,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/LoadCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "LoadCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn release_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::ReleaseCollectionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1886,12 +1943,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ReleaseCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ReleaseCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn describe_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::DescribeCollectionRequest>,
-        ) -> Result<tonic::Response<super::DescribeCollectionResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::DescribeCollectionResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1905,12 +1973,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DescribeCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "DescribeCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_collection_statistics(
             &mut self,
             request: impl tonic::IntoRequest<super::GetCollectionStatisticsRequest>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<super::GetCollectionStatisticsResponse>,
             tonic::Status,
         > {
@@ -1927,12 +2003,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetCollectionStatistics",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetCollectionStatistics",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn show_collections(
             &mut self,
             request: impl tonic::IntoRequest<super::ShowCollectionsRequest>,
-        ) -> Result<tonic::Response<super::ShowCollectionsResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ShowCollectionsResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1946,12 +2033,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ShowCollections",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ShowCollections",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn alter_collection(
             &mut self,
             request: impl tonic::IntoRequest<super::AlterCollectionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1965,12 +2063,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/AlterCollection",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "AlterCollection",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn create_partition(
             &mut self,
             request: impl tonic::IntoRequest<super::CreatePartitionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -1984,12 +2093,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreatePartition",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "CreatePartition",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn drop_partition(
             &mut self,
             request: impl tonic::IntoRequest<super::DropPartitionRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2003,12 +2123,17 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DropPartition",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "DropPartition"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn has_partition(
             &mut self,
             request: impl tonic::IntoRequest<super::HasPartitionRequest>,
-        ) -> Result<tonic::Response<super::BoolResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::BoolResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2022,12 +2147,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/HasPartition",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "HasPartition"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn load_partitions(
             &mut self,
             request: impl tonic::IntoRequest<super::LoadPartitionsRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2041,12 +2174,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/LoadPartitions",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "LoadPartitions",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn release_partitions(
             &mut self,
             request: impl tonic::IntoRequest<super::ReleasePartitionsRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2060,12 +2204,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ReleasePartitions",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ReleasePartitions",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_partition_statistics(
             &mut self,
             request: impl tonic::IntoRequest<super::GetPartitionStatisticsRequest>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<super::GetPartitionStatisticsResponse>,
             tonic::Status,
         > {
@@ -2082,12 +2234,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetPartitionStatistics",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetPartitionStatistics",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn show_partitions(
             &mut self,
             request: impl tonic::IntoRequest<super::ShowPartitionsRequest>,
-        ) -> Result<tonic::Response<super::ShowPartitionsResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ShowPartitionsResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2101,12 +2264,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ShowPartitions",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ShowPartitions",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_loading_progress(
             &mut self,
             request: impl tonic::IntoRequest<super::GetLoadingProgressRequest>,
-        ) -> Result<tonic::Response<super::GetLoadingProgressResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetLoadingProgressResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2120,12 +2294,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetLoadingProgress",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetLoadingProgress",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn create_alias(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateAliasRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2139,12 +2324,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreateAlias",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "CreateAlias"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn drop_alias(
             &mut self,
             request: impl tonic::IntoRequest<super::DropAliasRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2158,12 +2351,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DropAlias",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "DropAlias"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn alter_alias(
             &mut self,
             request: impl tonic::IntoRequest<super::AlterAliasRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2177,12 +2378,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/AlterAlias",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "AlterAlias"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn create_index(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateIndexRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2196,12 +2405,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreateIndex",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "CreateIndex"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn describe_index(
             &mut self,
             request: impl tonic::IntoRequest<super::DescribeIndexRequest>,
-        ) -> Result<tonic::Response<super::DescribeIndexResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::DescribeIndexResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2215,13 +2432,21 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DescribeIndex",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "DescribeIndex"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// Deprecated: use DescribeIndex instead
         pub async fn get_index_state(
             &mut self,
             request: impl tonic::IntoRequest<super::GetIndexStateRequest>,
-        ) -> Result<tonic::Response<super::GetIndexStateResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetIndexStateResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2235,13 +2460,18 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetIndexState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "GetIndexState"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// Deprecated: use DescribeIndex instead
         pub async fn get_index_build_progress(
             &mut self,
             request: impl tonic::IntoRequest<super::GetIndexBuildProgressRequest>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<super::GetIndexBuildProgressResponse>,
             tonic::Status,
         > {
@@ -2258,12 +2488,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetIndexBuildProgress",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetIndexBuildProgress",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn drop_index(
             &mut self,
             request: impl tonic::IntoRequest<super::DropIndexRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2277,12 +2518,17 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DropIndex",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "DropIndex"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn insert(
             &mut self,
             request: impl tonic::IntoRequest<super::InsertRequest>,
-        ) -> Result<tonic::Response<super::MutationResult>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MutationResult>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2296,12 +2542,15 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Insert",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Insert"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn delete(
             &mut self,
             request: impl tonic::IntoRequest<super::DeleteRequest>,
-        ) -> Result<tonic::Response<super::MutationResult>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MutationResult>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2315,12 +2564,15 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Delete",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Delete"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn search(
             &mut self,
             request: impl tonic::IntoRequest<super::SearchRequest>,
-        ) -> Result<tonic::Response<super::SearchResults>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::SearchResults>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2334,12 +2586,15 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Search",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Search"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn flush(
             &mut self,
             request: impl tonic::IntoRequest<super::FlushRequest>,
-        ) -> Result<tonic::Response<super::FlushResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::FlushResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2353,12 +2608,15 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Flush",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Flush"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn query(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryRequest>,
-        ) -> Result<tonic::Response<super::QueryResults>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryResults>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2372,12 +2630,18 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Query",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Query"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn calc_distance(
             &mut self,
             request: impl tonic::IntoRequest<super::CalcDistanceRequest>,
-        ) -> Result<tonic::Response<super::CalcDistanceResults>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::CalcDistanceResults>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2391,12 +2655,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CalcDistance",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "CalcDistance"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_flush_state(
             &mut self,
             request: impl tonic::IntoRequest<super::GetFlushStateRequest>,
-        ) -> Result<tonic::Response<super::GetFlushStateResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetFlushStateResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2410,12 +2682,17 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetFlushState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "GetFlushState"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_persistent_segment_info(
             &mut self,
             request: impl tonic::IntoRequest<super::GetPersistentSegmentInfoRequest>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<super::GetPersistentSegmentInfoResponse>,
             tonic::Status,
         > {
@@ -2432,12 +2709,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetPersistentSegmentInfo",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetPersistentSegmentInfo",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_query_segment_info(
             &mut self,
             request: impl tonic::IntoRequest<super::GetQuerySegmentInfoRequest>,
-        ) -> Result<tonic::Response<super::GetQuerySegmentInfoResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetQuerySegmentInfoResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2451,12 +2739,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetQuerySegmentInfo",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetQuerySegmentInfo",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_replicas(
             &mut self,
             request: impl tonic::IntoRequest<super::GetReplicasRequest>,
-        ) -> Result<tonic::Response<super::GetReplicasResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetReplicasResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2470,12 +2769,17 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetReplicas",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "GetReplicas"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn dummy(
             &mut self,
             request: impl tonic::IntoRequest<super::DummyRequest>,
-        ) -> Result<tonic::Response<super::DummyResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::DummyResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2489,13 +2793,19 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Dummy",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Dummy"));
+            self.inner.unary(req, path, codec).await
         }
         /// TODO: remove
         pub async fn register_link(
             &mut self,
             request: impl tonic::IntoRequest<super::RegisterLinkRequest>,
-        ) -> Result<tonic::Response<super::RegisterLinkResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::RegisterLinkResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2509,13 +2819,21 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/RegisterLink",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "RegisterLink"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// https://wiki.lfaidata.foundation/display/MIL/MEP+8+--+Add+metrics+for+proxy
         pub async fn get_metrics(
             &mut self,
             request: impl tonic::IntoRequest<super::GetMetricsRequest>,
-        ) -> Result<tonic::Response<super::GetMetricsResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetMetricsResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2529,12 +2847,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetMetrics",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "GetMetrics"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_component_states(
             &mut self,
             request: impl tonic::IntoRequest<super::GetComponentStatesRequest>,
-        ) -> Result<tonic::Response<super::ComponentStates>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ComponentStates>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2548,12 +2874,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetComponentStates",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetComponentStates",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn load_balance(
             &mut self,
             request: impl tonic::IntoRequest<super::LoadBalanceRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2567,12 +2904,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/LoadBalance",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "LoadBalance"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_compaction_state(
             &mut self,
             request: impl tonic::IntoRequest<super::GetCompactionStateRequest>,
-        ) -> Result<tonic::Response<super::GetCompactionStateResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetCompactionStateResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2586,12 +2931,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetCompactionState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetCompactionState",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn manual_compaction(
             &mut self,
             request: impl tonic::IntoRequest<super::ManualCompactionRequest>,
-        ) -> Result<tonic::Response<super::ManualCompactionResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ManualCompactionResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2605,12 +2961,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ManualCompaction",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ManualCompaction",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_compaction_state_with_plans(
             &mut self,
             request: impl tonic::IntoRequest<super::GetCompactionPlansRequest>,
-        ) -> Result<tonic::Response<super::GetCompactionPlansResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetCompactionPlansResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2624,13 +2991,21 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetCompactionStateWithPlans",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetCompactionStateWithPlans",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// https://wiki.lfaidata.foundation/display/MIL/MEP+24+--+Support+bulk+load
         pub async fn import(
             &mut self,
             request: impl tonic::IntoRequest<super::ImportRequest>,
-        ) -> Result<tonic::Response<super::ImportResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::ImportResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -2644,12 +3019,18 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/Import",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("milvus.proto.milvus.MilvusService", "Import"));
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_import_state(
             &mut self,
             request: impl tonic::IntoRequest<super::GetImportStateRequest>,
-        ) -> Result<tonic::Response<super::GetImportStateResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetImportStateResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2663,12 +3044,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetImportState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "GetImportState",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn list_import_tasks(
             &mut self,
             request: impl tonic::IntoRequest<super::ListImportTasksRequest>,
-        ) -> Result<tonic::Response<super::ListImportTasksResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ListImportTasksResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2682,13 +3074,24 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ListImportTasks",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "ListImportTasks",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// https://wiki.lfaidata.foundation/display/MIL/MEP+27+--+Support+Basic+Authentication
         pub async fn create_credential(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateCredentialRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2702,12 +3105,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreateCredential",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "CreateCredential",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn update_credential(
             &mut self,
             request: impl tonic::IntoRequest<super::UpdateCredentialRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2721,12 +3135,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/UpdateCredential",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "UpdateCredential",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn delete_credential(
             &mut self,
             request: impl tonic::IntoRequest<super::DeleteCredentialRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2740,12 +3165,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DeleteCredential",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "DeleteCredential",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn list_cred_users(
             &mut self,
             request: impl tonic::IntoRequest<super::ListCredUsersRequest>,
-        ) -> Result<tonic::Response<super::ListCredUsersResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::ListCredUsersResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2759,13 +3195,21 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/ListCredUsers",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "ListCredUsers"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// https://wiki.lfaidata.foundation/display/MIL/MEP+29+--+Support+Role-Based+Access+Control
         pub async fn create_role(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateRoleRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2779,12 +3223,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CreateRole",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "CreateRole"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn drop_role(
             &mut self,
             request: impl tonic::IntoRequest<super::DropRoleRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2798,12 +3250,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DropRole",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "DropRole"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn operate_user_role(
             &mut self,
             request: impl tonic::IntoRequest<super::OperateUserRoleRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2817,12 +3277,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/OperateUserRole",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "OperateUserRole",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn select_role(
             &mut self,
             request: impl tonic::IntoRequest<super::SelectRoleRequest>,
-        ) -> Result<tonic::Response<super::SelectRoleResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::SelectRoleResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2836,12 +3307,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/SelectRole",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "SelectRole"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn select_user(
             &mut self,
             request: impl tonic::IntoRequest<super::SelectUserRequest>,
-        ) -> Result<tonic::Response<super::SelectUserResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::SelectUserResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2855,12 +3334,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/SelectUser",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "SelectUser"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn operate_privilege(
             &mut self,
             request: impl tonic::IntoRequest<super::OperatePrivilegeRequest>,
-        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::super::common::Status>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2874,12 +3361,23 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/OperatePrivilege",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "milvus.proto.milvus.MilvusService",
+                        "OperatePrivilege",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn select_grant(
             &mut self,
             request: impl tonic::IntoRequest<super::SelectGrantRequest>,
-        ) -> Result<tonic::Response<super::SelectGrantResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::SelectGrantResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2893,12 +3391,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/SelectGrant",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "SelectGrant"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn get_version(
             &mut self,
             request: impl tonic::IntoRequest<super::GetVersionRequest>,
-        ) -> Result<tonic::Response<super::GetVersionResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::GetVersionResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2912,12 +3418,20 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetVersion",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "GetVersion"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn check_health(
             &mut self,
             request: impl tonic::IntoRequest<super::CheckHealthRequest>,
-        ) -> Result<tonic::Response<super::CheckHealthResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::CheckHealthResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -2931,7 +3445,12 @@ pub mod milvus_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CheckHealth",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.MilvusService", "CheckHealth"),
+                );
+            self.inner.unary(req, path, codec).await
         }
     }
 }
@@ -2948,7 +3467,7 @@ pub mod proxy_service_client {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D: TryInto<tonic::transport::Endpoint>,
             D::Error: Into<StdError>,
         {
             let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
@@ -3004,10 +3523,29 @@ pub mod proxy_service_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         pub async fn register_link(
             &mut self,
             request: impl tonic::IntoRequest<super::RegisterLinkRequest>,
-        ) -> Result<tonic::Response<super::RegisterLinkResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::RegisterLinkResponse>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -3021,7 +3559,12 @@ pub mod proxy_service_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.ProxyService/RegisterLink",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("milvus.proto.milvus.ProxyService", "RegisterLink"),
+                );
+            self.inner.unary(req, path, codec).await
         }
     }
 }
