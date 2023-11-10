@@ -518,12 +518,22 @@ impl Collection {
         status_to_result(&Some(status))
     }
 
-    pub async fn query<Exp, P>(&self, expr: Exp, partition_names: P) -> Result<Vec<FieldColumn>>
+    pub async fn query<Exp, P>(&self, expr: Exp, partition_names: P, output_fields: P) -> Result<Vec<FieldColumn>>
     where
         Exp: Into<String>,
         P: IntoIterator,
         P::Item: Into<String>,
     {
+        // let output_fields: Vec<String> = match output_fields {
+        //     Some(fields) => fields.into_iter().map(|f| f.into()).collect(),
+        //     None => self
+        //     .schema()
+        //     .fields
+        //     .iter()
+        //     .map(|f| f.name.clone())
+        //     .collect(),
+        // };
+
         let consistency_level = self.info.consistency_level();
 
         let res = self
@@ -534,12 +544,7 @@ impl Collection {
                 db_name: "".to_owned(),
                 collection_name: self.schema().name.clone(),
                 expr: expr.into(),
-                output_fields: self
-                    .schema()
-                    .fields
-                    .iter()
-                    .map(|f| f.name.clone())
-                    .collect(),
+                output_fields: output_fields.into_iter().map(|x| x.into()).collect(),
                 partition_names: partition_names.into_iter().map(|x| x.into()).collect(),
                 travel_timestamp: 0,
                 guarantee_timestamp: self.get_gts_from_consistency(consistency_level).await,
