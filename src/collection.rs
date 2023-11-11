@@ -564,7 +564,7 @@ impl Collection {
                 partition_names: partition_names.into_iter().map(|x| x.into()).collect(),
                 travel_timestamp: 0,
                 guarantee_timestamp: self.get_gts_from_consistency(consistency_level).await,
-                query_params: Vec::new(),
+                query_params,
             })
             .await?
             .into_inner();
