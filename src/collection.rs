@@ -518,7 +518,7 @@ impl Collection {
         status_to_result(&Some(status))
     }
 
-    pub async fn query<Exp, P>(&self, expr: Exp, partition_names: P, output_fields: P) -> Result<Vec<FieldColumn>>
+    pub async fn query<Exp, P>(&self, expr: Exp, partition_names: P, output_fields: P, limit: Option<i64>, offset: Option<i64>) -> Result<Vec<FieldColumn>>
     where
         Exp: Into<String>,
         P: IntoIterator,
@@ -533,6 +533,22 @@ impl Collection {
         //     .map(|f| f.name.clone())
         //     .collect(),
         // };
+
+        let mut query_params: Vec<KeyValuePair> = Vec::new();
+
+        if let Some(limit) = limit {
+            query_params.push(KeyValuePair {
+                key: "limit".to_owned(),
+                value: limit.to_string(),
+            });
+        }
+
+        if let Some(offset) = offset {
+            query_params.push(KeyValuePair {
+                key: "offset".to_owned(),
+                value: offset.to_string(),
+            });
+        }
 
         let consistency_level = self.info.consistency_level();
 

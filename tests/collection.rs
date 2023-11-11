@@ -53,7 +53,7 @@ async fn collection_basic() -> Result<()> {
         .await?;
     collection.load(1).await?;
 
-    let result = collection.query::<_, [&str; 0]>("id > 0", [], []).await?;
+    let result = collection.query::<_, [&str; 0]>("id > 0", [], [], None, None).await?;
 
     println!(
         "result num: {}",

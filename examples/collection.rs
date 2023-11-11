@@ -64,7 +64,7 @@ async fn hello_milvus(collection: &Collection) -> Result<(), Error> {
         .await?;
     collection.load(1).await?;
 
-    let result = collection.query::<_, [&str; 0]>("id > 0", [], []).await?;
+    let result = collection.query::<_, [&str; 0]>("id > 0", [], [], None, None).await?;
 
     println!(
         "result num: {}",
