@@ -427,6 +427,7 @@ pub struct CollectionSchema {
     pub(crate) name: String,
     pub(crate) description: String,
     pub(crate) fields: Vec<FieldSchema>,
+    pub(crate) enable_dynamic_field: bool,
 }
 
 impl CollectionSchema {
@@ -476,6 +477,7 @@ impl From<CollectionSchema> for schema::CollectionSchema {
             auto_id: col.auto_id(),
             description: col.description,
             fields: col.fields.into_iter().map(Into::into).collect(),
+            enable_dynamic_field: col.enable_dynamic_field,
         }
     }
 }
@@ -486,6 +488,7 @@ impl From<schema::CollectionSchema> for CollectionSchema {
             fields: v.fields.into_iter().map(Into::into).collect(),
             name: v.name,
             description: v.description,
+            enable_dynamic_field: v.enable_dynamic_field,
         }
     }
 }
@@ -495,6 +498,7 @@ pub struct CollectionSchemaBuilder {
     name: String,
     description: String,
     inner: Vec<FieldSchema>,
+    enable_dynamic_field: bool,
 }
 
 impl CollectionSchemaBuilder {
@@ -503,6 +507,7 @@ impl CollectionSchemaBuilder {
             name: name.to_owned(),
             description: description.to_owned(),
             inner: Vec::new(),
+            enable_dynamic_field: false,
         }
     }
 
@@ -558,6 +563,11 @@ impl CollectionSchemaBuilder {
         Err(error::Error::from(Error::NoPrimaryKey))
     }
 
+    pub fn enable_dynamic_field(&mut self) -> &mut Self {
+        self.enable_dynamic_field = true;
+        self
+    }
+
     pub fn build(&mut self) -> Result<CollectionSchema> {
         let mut has_primary = false;
 
@@ -578,6 +588,7 @@ impl CollectionSchemaBuilder {
             fields: this.inner.into(),
             name: this.name,
             description: this.description,
+            enable_dynamic_field: this.enable_dynamic_field,
         })
     }
 }

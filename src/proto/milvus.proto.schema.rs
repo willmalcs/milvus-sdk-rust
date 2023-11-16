@@ -37,6 +37,8 @@ pub struct CollectionSchema {
     pub auto_id: bool,
     #[prost(message, repeated, tag = "4")]
     pub fields: ::prost::alloc::vec::Vec<FieldSchema>,
+    #[prost(bool, tag = "5")]
+    pub enable_dynamic_field: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
