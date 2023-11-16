@@ -32,6 +32,56 @@ pub struct AlterAliasRequest {
     #[prost(string, tag = "4")]
     pub alias: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeAliasRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub alias: ::prost::alloc::string::String,
+}
+///
+/// Describe alias response
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeAliasResponse {
+    /// Response status
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub alias: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub collection: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListAliasesRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub collection_name: ::prost::alloc::string::String,
+}
+///
+/// List aliases response
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListAliasesResponse {
+    /// Response status
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag = "4")]
+    pub aliases: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
 /// *
 /// Create collection in milvus
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -40,7 +90,6 @@ pub struct CreateCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The unique collection name in milvus.(Required)
@@ -58,6 +107,9 @@ pub struct CreateCollectionRequest {
     pub consistency_level: i32,
     #[prost(message, repeated, tag = "7")]
     pub properties: ::prost::alloc::vec::Vec<super::common::KeyValuePair>,
+    /// num of default physical partitions, only used in partition key mode and changes are not supported
+    #[prost(int64, tag = "8")]
+    pub num_partitions: i64,
 }
 /// *
 /// Drop collection in milvus, also will drop data in collection.
@@ -67,7 +119,6 @@ pub struct DropCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The unique collection name in milvus.(Required)
@@ -82,7 +133,6 @@ pub struct AlterCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The unique collection name in milvus.(Required)
@@ -101,7 +151,6 @@ pub struct HasCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want to check.
@@ -135,7 +184,6 @@ pub struct DescribeCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want to describe, you can pass collection_name or collectionID
@@ -191,6 +239,10 @@ pub struct DescribeCollectionResponse {
     pub collection_name: ::prost::alloc::string::String,
     #[prost(message, repeated, tag = "13")]
     pub properties: ::prost::alloc::vec::Vec<super::common::KeyValuePair>,
+    #[prost(string, tag = "14")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(int64, tag = "15")]
+    pub num_partitions: i64,
 }
 /// *
 /// Load collection data into query nodes, then you can do vector search on this collection.
@@ -200,7 +252,6 @@ pub struct LoadCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want to load
@@ -209,6 +260,12 @@ pub struct LoadCollectionRequest {
     /// The replica number to load, default by 1
     #[prost(int32, tag = "4")]
     pub replica_number: i32,
+    /// create replica used resource group
+    #[prost(string, repeated, tag = "5")]
+    pub resource_groups: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Whether to enable refresh mode.
+    #[prost(bool, tag = "6")]
+    pub refresh: bool,
 }
 /// *
 /// Release collection data from query nodes, then you can't do vector search on this collection.
@@ -218,7 +275,6 @@ pub struct ReleaseCollectionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want to release
@@ -234,7 +290,6 @@ pub struct GetStatisticsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want get statistics
@@ -268,7 +323,6 @@ pub struct GetCollectionStatisticsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want get statistics
@@ -295,7 +349,6 @@ pub struct ShowCollectionsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// Not useful for now
@@ -306,6 +359,7 @@ pub struct ShowCollectionsRequest {
     pub r#type: i32,
     /// When type is InMemory, will return these collection's inMemory_percentages.(Optional)
     /// Deprecated: use GetLoadingProgress rpc instead
+    #[deprecated]
     #[prost(string, repeated, tag = "5")]
     pub collection_names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
@@ -331,7 +385,8 @@ pub struct ShowCollectionsResponse {
     pub created_utc_timestamps: ::prost::alloc::vec::Vec<u64>,
     /// Load percentage on querynode when type is InMemory
     /// Deprecated: use GetLoadingProgress rpc instead
-    #[prost(int64, repeated, tag = "6")]
+    #[deprecated]
+    #[prost(int64, repeated, packed = "false", tag = "6")]
     pub in_memory_percentages: ::prost::alloc::vec::Vec<i64>,
     /// Indicate whether query service is available
     #[prost(bool, repeated, tag = "7")]
@@ -345,7 +400,6 @@ pub struct CreatePartitionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -363,7 +417,6 @@ pub struct DropPartitionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -381,7 +434,6 @@ pub struct HasPartitionRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -400,7 +452,6 @@ pub struct LoadPartitionsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -412,6 +463,12 @@ pub struct LoadPartitionsRequest {
     /// The replicas number you would load, 1 by default
     #[prost(int32, tag = "5")]
     pub replica_number: i32,
+    /// create replica used resource group
+    #[prost(string, repeated, tag = "6")]
+    pub resource_groups: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Whether to enable refresh mode.
+    #[prost(bool, tag = "7")]
+    pub refresh: bool,
 }
 ///
 /// Release specific partitions data of one collection from query nodes.
@@ -422,7 +479,6 @@ pub struct ReleasePartitionsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -440,7 +496,6 @@ pub struct GetPartitionStatisticsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -466,7 +521,6 @@ pub struct ShowPartitionsRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name you want to describe, you can pass collection_name or collectionID
@@ -480,6 +534,7 @@ pub struct ShowPartitionsRequest {
     pub partition_names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     /// Decide return Loaded partitions or All partitions(Optional)
     /// Deprecated: use GetLoadingProgress rpc instead
+    #[deprecated]
     #[prost(enumeration = "ShowType", tag = "6")]
     pub r#type: i32,
 }
@@ -506,7 +561,8 @@ pub struct ShowPartitionsResponse {
     pub created_utc_timestamps: ::prost::alloc::vec::Vec<u64>,
     /// Load percentage on querynode
     /// Deprecated: use GetLoadingProgress rpc instead
-    #[prost(int64, repeated, tag = "6")]
+    #[deprecated]
+    #[prost(int64, repeated, packed = "false", tag = "6")]
     pub in_memory_percentages: ::prost::alloc::vec::Vec<i64>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -559,7 +615,6 @@ pub struct CreateIndexRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The particular collection name you want to create index.
@@ -584,7 +639,6 @@ pub struct DescribeIndexRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The particular collection name in Milvus
@@ -596,6 +650,8 @@ pub struct DescribeIndexRequest {
     /// No need to set up for now @2021.06.30
     #[prost(string, tag = "5")]
     pub index_name: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "6")]
+    pub timestamp: u64,
 }
 ///
 /// Index informations
@@ -624,6 +680,8 @@ pub struct IndexDescription {
     pub state: i32,
     #[prost(string, tag = "8")]
     pub index_state_fail_reason: ::prost::alloc::string::String,
+    #[prost(int64, tag = "9")]
+    pub pending_index_rows: i64,
 }
 ///
 /// Describe index response
@@ -645,7 +703,6 @@ pub struct GetIndexBuildProgressRequest {
     /// Not useful for now
     #[prost(message, optional, tag = "1")]
     pub base: ::core::option::Option<super::common::MsgBase>,
-    /// Not useful for now
     #[prost(string, tag = "2")]
     pub db_name: ::prost::alloc::string::String,
     /// The collection name in milvus
@@ -706,9 +763,9 @@ pub struct DropIndexRequest {
     /// must
     #[prost(string, tag = "3")]
     pub collection_name: ::prost::alloc::string::String,
+    /// Deprecated: not be used in the milvus
     #[prost(string, tag = "4")]
     pub field_name: ::prost::alloc::string::String,
-    /// No need to set up for now @2021.06.30
     #[prost(string, tag = "5")]
     pub index_name: ::prost::alloc::string::String,
 }
@@ -732,10 +789,28 @@ pub struct InsertRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpsertRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub partition_name: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag = "5")]
+    pub fields_data: ::prost::alloc::vec::Vec<super::schema::FieldData>,
+    #[prost(uint32, repeated, tag = "6")]
+    pub hash_keys: ::prost::alloc::vec::Vec<u32>,
+    #[prost(uint32, tag = "7")]
+    pub num_rows: u32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MutationResult {
     #[prost(message, optional, tag = "1")]
     pub status: ::core::option::Option<super::common::Status>,
-    /// required for insert, delete
+    /// required for insert, delete, upsert
     #[prost(message, optional, tag = "2")]
     pub i_ds: ::core::option::Option<super::schema::IDs>,
     /// error indexes indicate
@@ -808,6 +883,14 @@ pub struct SearchRequest {
     pub guarantee_timestamp: u64,
     #[prost(int64, tag = "12")]
     pub nq: i64,
+    #[prost(bool, tag = "13")]
+    pub not_return_all_meta: bool,
+    #[prost(enumeration = "super::common::ConsistencyLevel", tag = "14")]
+    pub consistency_level: i32,
+    #[prost(bool, tag = "15")]
+    pub use_default_consistency: bool,
+    #[prost(bool, tag = "16")]
+    pub search_by_primary_keys: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -856,11 +939,15 @@ pub struct FlushResponse {
         ::prost::alloc::string::String,
         super::schema::LongArray,
     >,
+    /// physical time for backup tool
     #[prost(map = "string, int64", tag = "5")]
     pub coll_seal_times: ::std::collections::HashMap<
         ::prost::alloc::string::String,
         i64,
     >,
+    /// hybrid ts for geting flush tate
+    #[prost(map = "string, uint64", tag = "6")]
+    pub coll_flush_ts: ::std::collections::HashMap<::prost::alloc::string::String, u64>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -885,6 +972,12 @@ pub struct QueryRequest {
     /// optional
     #[prost(message, repeated, tag = "9")]
     pub query_params: ::prost::alloc::vec::Vec<super::common::KeyValuePair>,
+    #[prost(bool, tag = "10")]
+    pub not_return_all_meta: bool,
+    #[prost(enumeration = "super::common::ConsistencyLevel", tag = "11")]
+    pub consistency_level: i32,
+    #[prost(bool, tag = "12")]
+    pub use_default_consistency: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -895,6 +988,8 @@ pub struct QueryResults {
     pub fields_data: ::prost::alloc::vec::Vec<super::schema::FieldData>,
     #[prost(string, tag = "3")]
     pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag = "4")]
+    pub output_fields: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -965,6 +1060,22 @@ pub mod calc_distance_results {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct FlushAllRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct FlushAllResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(uint64, tag = "2")]
+    pub flush_all_ts: u64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PersistentSegmentInfo {
     #[prost(int64, tag = "1")]
     pub segment_id: i64,
@@ -1015,6 +1126,7 @@ pub struct QuerySegmentInfo {
     #[prost(int64, tag = "7")]
     pub index_id: i64,
     /// deprecated, check node_ids(NodeIds) field
+    #[deprecated]
     #[prost(int64, tag = "8")]
     pub node_id: i64,
     #[prost(enumeration = "super::common::SegmentState", tag = "9")]
@@ -1126,6 +1238,8 @@ pub struct LoadBalanceRequest {
     pub sealed_segment_i_ds: ::prost::alloc::vec::Vec<i64>,
     #[prost(string, tag = "5")]
     pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "6")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1142,6 +1256,8 @@ pub struct ManualCompactionResponse {
     pub status: ::core::option::Option<super::common::Status>,
     #[prost(int64, tag = "2")]
     pub compaction_id: i64,
+    #[prost(int32, tag = "3")]
+    pub compaction_plan_count: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1194,10 +1310,34 @@ pub struct CompactionMergeInfo {
 pub struct GetFlushStateRequest {
     #[prost(int64, repeated, tag = "1")]
     pub segment_i_ds: ::prost::alloc::vec::Vec<i64>,
+    #[prost(uint64, tag = "2")]
+    pub flush_ts: u64,
+    #[prost(string, tag = "3")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub collection_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetFlushStateResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(bool, tag = "2")]
+    pub flushed: bool,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetFlushAllStateRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(uint64, tag = "2")]
+    pub flush_all_ts: u64,
+    #[prost(string, tag = "3")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetFlushAllStateResponse {
     #[prost(message, optional, tag = "1")]
     pub status: ::core::option::Option<super::common::Status>,
     #[prost(bool, tag = "2")]
@@ -1224,6 +1364,8 @@ pub struct ImportRequest {
     /// import options, bucket, etc.
     #[prost(message, repeated, tag = "6")]
     pub options: ::prost::alloc::vec::Vec<super::common::KeyValuePair>,
+    #[prost(string, tag = "7")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1280,6 +1422,8 @@ pub struct ListImportTasksRequest {
     /// maximum number of tasks returned, list all tasks if the value is 0
     #[prost(int64, tag = "2")]
     pub limit: i64,
+    #[prost(string, tag = "3")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1299,6 +1443,10 @@ pub struct GetReplicasRequest {
     pub collection_id: i64,
     #[prost(bool, tag = "3")]
     pub with_shard_nodes: bool,
+    #[prost(string, tag = "4")]
+    pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1324,6 +1472,14 @@ pub struct ReplicaInfo {
     /// include leaders
     #[prost(int64, repeated, tag = "5")]
     pub node_ids: ::prost::alloc::vec::Vec<i64>,
+    #[prost(string, tag = "6")]
+    pub resource_group_name: ::prost::alloc::string::String,
+    /// outbound access rg -> node num
+    #[prost(map = "string, int32", tag = "7")]
+    pub num_outbound_node: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        i32,
+    >,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1560,6 +1716,9 @@ pub struct GrantEntity {
     /// privilege
     #[prost(message, optional, tag = "4")]
     pub grantor: ::core::option::Option<GrantorEntity>,
+    /// db name
+    #[prost(string, tag = "5")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1604,6 +1763,8 @@ pub struct GetLoadingProgressRequest {
     pub collection_name: ::prost::alloc::string::String,
     #[prost(string, repeated, tag = "3")]
     pub partition_names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, tag = "4")]
+    pub db_name: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1612,6 +1773,29 @@ pub struct GetLoadingProgressResponse {
     pub status: ::core::option::Option<super::common::Status>,
     #[prost(int64, tag = "2")]
     pub progress: i64,
+    #[prost(int64, tag = "3")]
+    pub refresh_progress: i64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetLoadStateRequest {
+    /// Not useful for now
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub collection_name: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag = "3")]
+    pub partition_names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, tag = "4")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetLoadStateResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(enumeration = "super::common::LoadState", tag = "2")]
+    pub state: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1642,6 +1826,244 @@ pub struct CheckHealthResponse {
     pub is_healthy: bool,
     #[prost(string, repeated, tag = "3")]
     pub reasons: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(enumeration = "QuotaState", repeated, tag = "4")]
+    pub quota_states: ::prost::alloc::vec::Vec<i32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateResourceGroupRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub resource_group: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DropResourceGroupRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub resource_group: ::prost::alloc::string::String,
+}
+/// transfer `nodeNum` nodes from `source_resource_group` to `target_resource_group`
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransferNodeRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub source_resource_group: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub target_resource_group: ::prost::alloc::string::String,
+    #[prost(int32, tag = "4")]
+    pub num_node: i32,
+}
+/// transfer `replicaNum` replicas in `collectionID` from `source_resource_group` to `target_resource_group`
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransferReplicaRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub source_resource_group: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub target_resource_group: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub collection_name: ::prost::alloc::string::String,
+    #[prost(int64, tag = "5")]
+    pub num_replica: i64,
+    #[prost(string, tag = "6")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListResourceGroupsRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListResourceGroupsResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(string, repeated, tag = "2")]
+    pub resource_groups: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeResourceGroupRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub resource_group: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeResourceGroupResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(message, optional, tag = "2")]
+    pub resource_group: ::core::option::Option<ResourceGroup>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ResourceGroup {
+    #[prost(string, tag = "1")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(int32, tag = "2")]
+    pub capacity: i32,
+    #[prost(int32, tag = "3")]
+    pub num_available_node: i32,
+    /// collection name -> loaded replica num
+    #[prost(map = "string, int32", tag = "4")]
+    pub num_loaded_replica: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        i32,
+    >,
+    /// collection name -> accessed other rg's node num
+    #[prost(map = "string, int32", tag = "5")]
+    pub num_outgoing_node: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        i32,
+    >,
+    /// collection name -> be accessed node num by other rg
+    #[prost(map = "string, int32", tag = "6")]
+    pub num_incoming_node: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        i32,
+    >,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RenameCollectionRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub old_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub new_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub new_db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetIndexStatisticsRequest {
+    /// Not useful for now
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    /// Not useful for now
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+    /// The particular collection name in Milvus
+    #[prost(string, tag = "3")]
+    pub collection_name: ::prost::alloc::string::String,
+    /// The index name in this particular collection
+    #[prost(string, tag = "4")]
+    pub index_name: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "5")]
+    pub timestamp: u64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetIndexStatisticsResponse {
+    /// Response status
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    /// All index information.
+    #[prost(message, repeated, tag = "2")]
+    pub index_descriptions: ::prost::alloc::vec::Vec<IndexDescription>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ConnectRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(message, optional, tag = "2")]
+    pub client_info: ::core::option::Option<super::common::ClientInfo>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ConnectResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(message, optional, tag = "2")]
+    pub server_info: ::core::option::Option<super::common::ServerInfo>,
+    #[prost(int64, tag = "3")]
+    pub identifier: i64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AllocTimestampRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AllocTimestampResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(uint64, tag = "2")]
+    pub timestamp: u64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateDatabaseRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DropDatabaseRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub db_name: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListDatabasesRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListDatabasesResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(string, repeated, tag = "2")]
+    pub db_names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(uint64, repeated, tag = "3")]
+    pub created_timestamp: ::prost::alloc::vec::Vec<u64>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ReplicateMessageRequest {
+    #[prost(message, optional, tag = "1")]
+    pub base: ::core::option::Option<super::common::MsgBase>,
+    #[prost(string, tag = "2")]
+    pub channel_name: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "3")]
+    pub begin_ts: u64,
+    #[prost(uint64, tag = "4")]
+    pub end_ts: u64,
+    #[prost(bytes = "vec", repeated, tag = "5")]
+    pub msgs: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+    #[prost(message, repeated, tag = "6")]
+    pub start_positions: ::prost::alloc::vec::Vec<super::msg::MsgPosition>,
+    #[prost(message, repeated, tag = "7")]
+    pub end_positions: ::prost::alloc::vec::Vec<super::msg::MsgPosition>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ReplicateMessageResponse {
+    #[prost(message, optional, tag = "1")]
+    pub status: ::core::option::Option<super::common::Status>,
+    #[prost(string, tag = "2")]
+    pub position: ::prost::alloc::string::String,
 }
 /// Deprecated: use GetLoadingProgress rpc instead
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -1724,6 +2146,41 @@ impl OperatePrivilegeType {
         }
     }
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum QuotaState {
+    Unknown = 0,
+    ReadLimited = 2,
+    WriteLimited = 3,
+    DenyToRead = 4,
+    DenyToWrite = 5,
+}
+impl QuotaState {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            QuotaState::Unknown => "Unknown",
+            QuotaState::ReadLimited => "ReadLimited",
+            QuotaState::WriteLimited => "WriteLimited",
+            QuotaState::DenyToRead => "DenyToRead",
+            QuotaState::DenyToWrite => "DenyToWrite",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "Unknown" => Some(Self::Unknown),
+            "ReadLimited" => Some(Self::ReadLimited),
+            "WriteLimited" => Some(Self::WriteLimited),
+            "DenyToRead" => Some(Self::DenyToRead),
+            "DenyToWrite" => Some(Self::DenyToWrite),
+            _ => None,
+        }
+    }
+}
 /// Generated client implementations.
 pub mod milvus_service_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -1733,17 +2190,17 @@ pub mod milvus_service_client {
     pub struct MilvusServiceClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl MilvusServiceClient<tonic::transport::Channel> {
-        /// Attempt to create a new client by connecting to a given endpoint.
-        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
-        where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
-            D::Error: Into<StdError>,
-        {
-            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
-            Ok(Self::new(conn))
-        }
-    }
+    // impl MilvusServiceClient<tonic::transport::Channel> {
+    //     /// Attempt to create a new client by connecting to a given endpoint.
+    //     pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
+    //     where
+    //         D: std::convert::TryInto<tonic::transport::Endpoint>,
+    //         D::Error: Into<StdError>,
+    //     {
+    //         let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
+    //         Ok(Self::new(conn))
+    //     }
+    // }
     impl<T> MilvusServiceClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
@@ -2122,6 +2579,25 @@ pub mod milvus_service_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn get_load_state(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetLoadStateRequest>,
+        ) -> Result<tonic::Response<super::GetLoadStateResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/GetLoadState",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         pub async fn create_alias(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateAliasRequest>,
@@ -2179,6 +2655,44 @@ pub mod milvus_service_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn describe_alias(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeAliasRequest>,
+        ) -> Result<tonic::Response<super::DescribeAliasResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/DescribeAlias",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn list_aliases(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListAliasesRequest>,
+        ) -> Result<tonic::Response<super::ListAliasesResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/ListAliases",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         pub async fn create_index(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateIndexRequest>,
@@ -2214,6 +2728,25 @@ pub mod milvus_service_client {
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/DescribeIndex",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn get_index_statistics(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetIndexStatisticsRequest>,
+        ) -> Result<tonic::Response<super::GetIndexStatisticsResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/GetIndexStatistics",
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
@@ -2317,6 +2850,25 @@ pub mod milvus_service_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn upsert(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpsertRequest>,
+        ) -> Result<tonic::Response<super::MutationResult>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/Upsert",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         pub async fn search(
             &mut self,
             request: impl tonic::IntoRequest<super::SearchRequest>,
@@ -2393,6 +2945,25 @@ pub mod milvus_service_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn flush_all(
+            &mut self,
+            request: impl tonic::IntoRequest<super::FlushAllRequest>,
+        ) -> Result<tonic::Response<super::FlushAllResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/FlushAll",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         pub async fn get_flush_state(
             &mut self,
             request: impl tonic::IntoRequest<super::GetFlushStateRequest>,
@@ -2409,6 +2980,25 @@ pub mod milvus_service_client {
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/GetFlushState",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn get_flush_all_state(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetFlushAllStateRequest>,
+        ) -> Result<tonic::Response<super::GetFlushAllStateResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/GetFlushAllState",
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
@@ -2930,6 +3520,304 @@ pub mod milvus_service_client {
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/milvus.proto.milvus.MilvusService/CheckHealth",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_resource_group(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateResourceGroupRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/CreateResourceGroup",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn drop_resource_group(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DropResourceGroupRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/DropResourceGroup",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn transfer_node(
+            &mut self,
+            request: impl tonic::IntoRequest<super::TransferNodeRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/TransferNode",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn transfer_replica(
+            &mut self,
+            request: impl tonic::IntoRequest<super::TransferReplicaRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/TransferReplica",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn list_resource_groups(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListResourceGroupsRequest>,
+        ) -> Result<tonic::Response<super::ListResourceGroupsResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/ListResourceGroups",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_resource_group(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeResourceGroupRequest>,
+        ) -> Result<
+            tonic::Response<super::DescribeResourceGroupResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/DescribeResourceGroup",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn rename_collection(
+            &mut self,
+            request: impl tonic::IntoRequest<super::RenameCollectionRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/RenameCollection",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn list_indexed_segment(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::feder::ListIndexedSegmentRequest,
+            >,
+        ) -> Result<
+            tonic::Response<super::super::feder::ListIndexedSegmentResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/ListIndexedSegment",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_segment_index_data(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::feder::DescribeSegmentIndexDataRequest,
+            >,
+        ) -> Result<
+            tonic::Response<super::super::feder::DescribeSegmentIndexDataResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/DescribeSegmentIndexData",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn connect(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ConnectRequest>,
+        ) -> Result<tonic::Response<super::ConnectResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/Connect",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn alloc_timestamp(
+            &mut self,
+            request: impl tonic::IntoRequest<super::AllocTimestampRequest>,
+        ) -> Result<tonic::Response<super::AllocTimestampResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/AllocTimestamp",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_database(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateDatabaseRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/CreateDatabase",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn drop_database(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DropDatabaseRequest>,
+        ) -> Result<tonic::Response<super::super::common::Status>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/DropDatabase",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn list_databases(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListDatabasesRequest>,
+        ) -> Result<tonic::Response<super::ListDatabasesResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/ListDatabases",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn replicate_message(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ReplicateMessageRequest>,
+        ) -> Result<tonic::Response<super::ReplicateMessageResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/milvus.proto.milvus.MilvusService/ReplicateMessage",
             );
             self.inner.unary(request.into_request(), path, codec).await
         }

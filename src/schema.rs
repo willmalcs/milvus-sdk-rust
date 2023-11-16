@@ -155,6 +155,11 @@ pub struct FieldSchema {
     pub chunk_size: usize,
     pub dim: i64,        // only for BinaryVector and FloatVector
     pub max_length: i32, // only for VarChar
+    //
+    pub element_type: i32,
+    pub default_value: Option<schema::ValueField>,
+    pub is_dynamic: bool,
+    pub is_partition_key: bool,
 }
 
 impl FieldSchema {
@@ -168,6 +173,10 @@ impl FieldSchema {
             chunk_size: 0,
             dim: 0,
             max_length: 0,
+            element_type: 0,
+            default_value: None,
+            is_dynamic: false,
+            is_partition_key: false,
         }
     }
 }
@@ -202,6 +211,10 @@ impl From<schema::FieldSchema> for FieldSchema {
                     _ => dim,
                 }) as _,
             dim,
+            element_type: fld.element_type,
+            default_value: fld.default_value,
+            is_dynamic: fld.is_dynamic,
+            is_partition_key: fld.is_partition_key,
         }
     }
 }
@@ -217,6 +230,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -230,6 +244,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -243,6 +258,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -256,6 +272,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -269,6 +286,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -282,6 +300,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -300,6 +319,7 @@ impl FieldSchema {
             max_length,
             chunk_size: 1,
             dim: 1,
+            ..Default::default()
         }
     }
 
@@ -313,6 +333,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -326,6 +347,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -339,6 +361,7 @@ impl FieldSchema {
             chunk_size: 1,
             dim: 1,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -356,6 +379,7 @@ impl FieldSchema {
             auto_id: false,
             chunk_size: 1,
             dim: 1,
+            ..Default::default()
         }
     }
 
@@ -373,6 +397,7 @@ impl FieldSchema {
             is_primary: false,
             auto_id: false,
             max_length: 0,
+            ..Default::default()
         }
     }
 
@@ -390,6 +415,7 @@ impl FieldSchema {
             is_primary: false,
             auto_id: false,
             max_length: 0,
+            ..Default::default()
         }
     }
 }
@@ -418,6 +444,10 @@ impl From<FieldSchema> for schema::FieldSchema {
             index_params: Vec::new(),
             auto_id: fld.auto_id,
             state: FieldState::FieldCreated as _,
+            element_type: fld.element_type,
+            default_value: fld.default_value,
+            is_dynamic: fld.is_dynamic,
+            is_partition_key: fld.is_partition_key,
         }
     }
 }

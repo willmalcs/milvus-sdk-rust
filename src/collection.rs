@@ -137,6 +137,7 @@ impl Collection {
                     db_name: "".to_string(),
                     collection_name: self.schema().name.clone(),
                     replica_number,
+                    ..Default::default()
                 })
                 .await?
                 .into_inner(),
@@ -418,6 +419,7 @@ impl Collection {
                     collection_name: self.schema().name.clone(),
                     replica_number,
                     partition_names: names.clone(),
+                    ..Default::default()
                 })
                 .await?
                 .into_inner(),
@@ -444,6 +446,7 @@ impl Collection {
                 base: None,
                 collection_name: self.schema().name.to_string(),
                 partition_names: partition_names.into_iter().map(|x| x.to_string()).collect(),
+                ..Default::default()
             })
             .await?
             .into_inner();
@@ -511,6 +514,7 @@ impl Collection {
                 shards_num: shards_num.unwrap_or(1),
                 consistency_level: consistency_level.unwrap_or(ConsistencyLevel::Session) as i32,
                 properties: vec![],
+                ..Default::default()
             })
             .await?
             .into_inner();
@@ -565,6 +569,7 @@ impl Collection {
                 travel_timestamp: 0,
                 guarantee_timestamp: self.get_gts_from_consistency(consistency_level).await,
                 query_params,
+                ..Default::default()
             })
             .await?
             .into_inner();
@@ -681,6 +686,7 @@ impl Collection {
                 search_params,
                 travel_timestamp: 0,
                 guarantee_timestamp: self.get_gts_from_consistency(consistency_level).await,
+                ..Default::default()
             })
             .await?
             .into_inner();
@@ -801,6 +807,7 @@ impl Collection {
                 collection_name: self.schema().name.clone(),
                 field_name: field_name.into(),
                 index_name: "".to_string(),
+                ..Default::default()
             })
             .await?
             .into_inner();
