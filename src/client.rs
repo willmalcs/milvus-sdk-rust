@@ -160,8 +160,9 @@ impl Client {
 
         schema.encode(&mut buf)?;
 
-        println!("Buffer in hex: '{:x?}'", buf);
-        println!("create_collection::buf: '{:#?}'", buf);
+        // println!("Buffer in hex: '{:x?}'", buf);
+        println!(r#"Buffer in hex: "{:?}""#, buf.iter().map(|b| format!("{:02x}", b)).collect::<Vec<_>>().join(" "));
+        println!(r#"create_collection::buf: "{:#?}""#, buf);
 
         let status = self
             .client
