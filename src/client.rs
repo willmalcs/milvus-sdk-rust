@@ -150,11 +150,17 @@ impl Client {
         schema: CollectionSchema,
         options: Option<CreateCollectionOptions>,
     ) -> Result<Collection> {
+        println!("create_collection::schema: {:#?}", schema);
         let options = options.unwrap_or_default();
         let schema: crate::proto::schema::CollectionSchema = schema.into();
+
+        println!("create_collection::schema::into() {:#?}", schema);
+
         let mut buf = BytesMut::new();
 
         schema.encode(&mut buf)?;
+
+        println!("create_collection::buf: {:#?}", buf);
 
         let status = self
             .client
