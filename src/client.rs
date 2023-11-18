@@ -150,19 +150,18 @@ impl Client {
         schema: CollectionSchema,
         options: Option<CreateCollectionOptions>,
     ) -> Result<Collection> {
-        println!("create_collection::schema: {:#?}", schema);
+        // println!("create_collection::schema: {:#?}", schema);
         let options = options.unwrap_or_default();
         let schema: crate::proto::schema::CollectionSchema = schema.into();
 
-        println!("create_collection::schema::into() {:#?}", schema);
+        // println!("create_collection::schema::into() {:#?}", schema);
 
         let mut buf = BytesMut::new();
 
         schema.encode(&mut buf)?;
 
-        // println!("Buffer in hex: '{:x?}'", buf);
-        println!(r#"Buffer in hex: "{:?}""#, buf.iter().map(|b| format!("{:02x}", b)).collect::<Vec<_>>().join(" "));
-        println!(r#"create_collection::buf: "{:#?}""#, buf);
+        // println!(r#"Buffer in hex: "{:?}""#, buf.iter().map(|b| format!("{:02x}", b)).collect::<Vec<_>>().join(" "));
+        // println!(r#"create_collection::buf: "{:#?}""#, buf);
 
         let status = self
             .client
