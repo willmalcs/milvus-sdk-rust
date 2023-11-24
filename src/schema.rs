@@ -220,10 +220,23 @@ impl From<schema::FieldSchema> for FieldSchema {
 }
 
 impl FieldSchema {
-    pub fn is_dynamic(&mut self, is_dynamic: bool) -> &mut Self {
+    pub fn set_is_dynamic(&mut self, is_dynamic: bool) {
         self.is_dynamic = is_dynamic;
-        self
     }
+
+    // pub fn new_json(name: &str, description: &str) -> Self {
+    //     Self {
+    //         name: name.to_owned(),
+    //         description: description.to_owned(),
+    //         dtype: DataType::Json,
+    //         is_primary: false,
+    //         auto_id: false,
+    //         chunk_size: 0,
+    //         dim: 0,
+    //         max_length: 0,
+    //         ..Default::default()
+    //     }
+    // }
 
     pub fn new_bool(name: &str, description: &str) -> Self {
         Self {
