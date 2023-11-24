@@ -175,7 +175,7 @@ impl FieldSchema {
             max_length: 0,
             element_type: 0,
             default_value: None,
-            // TODO - testing changing to default dyanmic field
+            // TODO - testing changing to default dyanmic field to true
             is_dynamic: true,
             is_partition_key: false,
         }
