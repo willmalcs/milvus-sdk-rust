@@ -175,8 +175,7 @@ impl FieldSchema {
             max_length: 0,
             element_type: 0,
             default_value: None,
-            // TODO - testing changing to default dyanmic field to true
-            is_dynamic: true,
+            is_dynamic: false,
             is_partition_key: false,
         }
     }
@@ -221,6 +220,11 @@ impl From<schema::FieldSchema> for FieldSchema {
 }
 
 impl FieldSchema {
+    pub fn is_dynamic(&mut self, is_dynamic: bool) -> &mut Self {
+        self.is_dynamic = is_dynamic;
+        self
+    }
+
     pub fn new_bool(name: &str, description: &str) -> Self {
         Self {
             name: name.to_owned(),

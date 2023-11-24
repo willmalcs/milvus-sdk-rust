@@ -197,9 +197,16 @@ impl From<FieldColumn> for schema::FieldData {
                     }),
                     _ => unimplemented!(),
                 },
-                ValueVec::Double(v) => Field::Scalars(ScalarField {
-                    data: Some(ScalarData::DoubleData(schema::DoubleArray { data: v })),
-                }),
+                ValueVec::Double(v) =>  match this.dtype {
+                    DataType::Double => Field::Scalars(ScalarField {
+                        data: Some(ScalarData::DoubleData(schema::DoubleArray { data: v })),
+                    }),
+                    DataType::FloatVector => Field::Vectors(VectorField {
+                        data: Some(VectorData::FloatVector(schema::FloatArray { data: v.into_iter().map(|x| x as f32).collect() })),
+                        dim: this.dim,
+                    }),
+                    _ => unimplemented!(),
+                },
                 ValueVec::String(v) => Field::Scalars(ScalarField {
                     data: Some(ScalarData::StringData(schema::StringArray { data: v })),
                 }),
