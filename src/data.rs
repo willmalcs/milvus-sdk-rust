@@ -208,7 +208,8 @@ impl From<FieldColumn> for schema::FieldData {
                     dim: this.dim,
                 }),
             }),
-            is_dynamic: this.is_dynamic
+            // TODO: fix this -- testing hardcoding this to true
+            is_dynamic: true
         }
     }
 }
